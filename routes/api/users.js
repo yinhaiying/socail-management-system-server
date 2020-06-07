@@ -1,6 +1,8 @@
 const Router = require('koa-router');
 const router = new Router();
 
+// 引入User
+const User = requrie('../../models/User.js');
 
 /**
 * @route Get  api/users/test
