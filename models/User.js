@@ -1,9 +1,9 @@
-const mongoose = requrie('mongoose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // 创建Schema
 const UserSchema = new Schema({
-    name:{
+    username:{
         type:String,
         required:true
     },

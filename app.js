@@ -2,12 +2,15 @@ const koa = require('koa');
 const Router = require('koa-router');
 const mongoose  = require('mongoose');
 const config = require('./config/keys.js');
-
 const users = require('./routes/api/users.js');
-
+const bodyParser = require('koa-body-parser');
 // 实例化koa
 const app = new koa();
 const router = new Router();
+
+app.use(bodyParser())
+
+
 
 // 路由
 router.get('/', async ctx => {
