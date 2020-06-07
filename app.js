@@ -2,8 +2,10 @@ const koa = require('koa');
 const Router = require('koa-router');
 const mongoose  = require('mongoose');
 const config = require('./config/keys.js');
-// 实例化koa
 
+const users = require('./routes/api/users.js');
+
+// 实例化koa
 const app = new koa();
 const router = new Router();
 
@@ -24,8 +26,9 @@ const db = mongoose.connect(config.mongoURI,{
   console.log('mongodb连接失败:'+err);
 })
 
+router.use('/api/users',users.routes());
 
-
+// 配置路由地址  访问localhost:5000/api/users  会进入users.js文件查找路由
 
 
 
