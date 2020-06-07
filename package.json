@@ -1,0 +1,23 @@
+{
+  "name": "socail-management-system-server",
+  "version": "0.0.1",
+  "description": "社交管理系统后端基于koa实现",
+  "main": "app.js",
+  "scripts": {
+    "start":"node app.js",
+    "nodemon":"nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yinhaiying/socail-management-system-server.git"
+  },
+  "keywords": [
+    "koa"
+  ],
+  "author": "haiyingsitan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yinhaiying/socail-management-system-server/issues"
+  },
+  "homepage": "https://github.com/yinhaiying/socail-management-system-server#readme"
+}
