@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const router = new Router();
+const gravatar = require('gravatar');
 // 加密
 const bcrypt = require('bcrypt');
 // 引入User
@@ -31,9 +32,9 @@ router.post('/register',async ctx => {
             msg:'用户名已注册'
         }
     }else{
-        //没查到
+        const avatar =  gravatar.url(email, {s: '200', r: 'pg', d: 'mm'});
         const newUser = new User({
-           username,email,password 
+           username,email,password,avatar
         });
         await bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(newUser.password, salt, function(err, hash) {
