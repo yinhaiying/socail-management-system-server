@@ -8,6 +8,9 @@ const passport = require('koa-passport');
 const User = require('../../models/User.js');
 const {tools} = require('../../util/utils');
 
+// 引入验证
+const {validateRegisterData} = require('../../validation/register');
+const {validateLoginData} = require('../../validation/login');
 
 
 console.log(tools);
@@ -30,18 +33,14 @@ router.get('/test',async ctx => {
 router.post('/register',async ctx => {
     // 通过body-parser获取到前端传递过来的内容
     const {username,email,password} = ctx.request.body;
-    let checkArr = [
-        { value:username,msg:'用户名不能为空'},
-        { value:email,msg:'邮箱不能为空'},
-        { value:password,msg:'密码不能为空'},
-    ];
-    let result = tools.validate(checkArr);
-    if(!result.result){
-        ctx.body = {
-            code:1,
-            message:result.msg
-        };
-        return ;
+    const {msg,isValid} = validateRegisterData(ctx.request.body);
+    if(!isValid){
+      ctx.status = 400;
+      ctx.body = {
+          code:1,
+          msg
+      }
+      return;
     }
     // 将数据存入数据库
     const findResult =  await User.find({username});
@@ -86,13 +85,14 @@ router.post('/login',async ctx => {
         { value:email,msg:'邮箱不能为空'},
         { value:password,msg:'密码不能为空'},
     ];
-    let result = tools.validate(checkArr);
-    if(!result.result){
-        ctx.body = {
-            code:1,
-            message:result.msg
-        };
-        return ;
+    const {msg,isValid} = validateLoginData(ctx.request.body);
+    if(!isValid){
+      ctx.status = 400;
+      ctx.body = {
+          code:1,
+          msg
+      }
+      return;
     }
     const findUser = await User.find({email});
      if(findUser.length === 0){
