@@ -1,6 +1,7 @@
 const Router = require('koa-router');
 const router = new Router();
 const gravatar = require('gravatar');
+const bcrypt = require('bcrypt');
 // 引入User
 const User = require('../../models/User.js');
 const {tools} = require('../../util/utils');
@@ -24,7 +25,19 @@ router.get('/test',async ctx => {
 router.post('/register',async ctx => {
     // 通过body-parser获取到前端传递过来的内容
     const {username,email,password} = ctx.request.body;
-    console.log(ctx.request.body);
+    let checkArr = [
+        { value:username,msg:'用户名不能为空'},
+        { value:email,msg:'邮箱不能为空'},
+        { value:password,msg:'密码不能为空'},
+    ];
+    let result = tools.validate(checkArr);
+    if(!result.result){
+        ctx.body = {
+            code:1,
+            message:result.msg
+        };
+        return ;
+    }
     // 将数据存入数据库
     const findResult =  await User.find({username});
     console.log(findResult)
@@ -53,6 +66,57 @@ router.post('/register',async ctx => {
         }
     }
 });
+
+
+/**
+* @route Get  api/users/login
+* @desc 登录接口地址 返回token
+* @access 接口是公开的
+*/
+
+router.post('/login',async ctx => {
+    // 查询当前登录的邮箱是否存在
+    const {email,password} = ctx.request.body;
+    let checkArr = [
+        { value:email,msg:'邮箱不能为空'},
+        { value:password,msg:'密码不能为空'},
+    ];
+    let result = tools.validate(checkArr);
+    if(!result.result){
+        ctx.body = {
+            code:1,
+            message:result.msg
+        };
+        return ;
+    }
+    const findUser = await User.find({email});
+     if(findUser.length === 0){
+         console.log(ctx.status)
+         ctx.status = 404;
+         ctx.body = {
+             code:1,
+             msg:'用户不存在'
+         }
+     }else{
+        //  验证密码
+        const checkResult =  bcrypt.compareSync(password, findUser[0].password); 
+        if(checkResult){
+            ctx.status = 200;
+            ctx.body = {
+                code:0,
+                msg:'success'
+            }
+        }else{
+            ctx.status = 400;
+            ctx.body = {
+                code:1,
+                msg:'密码错误'
+            }
+        }
+
+     }
+})
+
 
 
 module.exports = router;
