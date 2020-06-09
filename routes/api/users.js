@@ -2,6 +2,7 @@ const Router = require('koa-router');
 const router = new Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 // 引入User
 const User = require('../../models/User.js');
 const {tools} = require('../../util/utils');
@@ -99,12 +100,24 @@ router.post('/login',async ctx => {
          }
      }else{
         //  验证密码
-        const checkResult =  bcrypt.compareSync(password, findUser[0].password); 
+        const user = findUser[0];
+        const checkResult =  bcrypt.compareSync(password, user.password); 
+       
         if(checkResult){
+            // 验证通过  生成token
+            //  jwt根据哪些字段信息生成token 自行设置
+            const payLoad = {
+                id:user.id,
+                username:user.username,
+                avatar:user.avatar
+            }
+            const token = jwt.sign(payLoad,"secret",{expiresIn:3600})  // secret可以随意设置
             ctx.status = 200;
+            // 这里token的值必须是Bearer+空格 + token
             ctx.body = {
                 code:0,
-                msg:'success'
+                msg:'success',
+                token:"Bearer " + token
             }
         }else{
             ctx.status = 400;
