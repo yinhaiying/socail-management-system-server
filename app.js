@@ -4,13 +4,21 @@ const mongoose  = require('mongoose');
 const config = require('./config/keys.js');
 const users = require('./routes/api/users.js');
 const bodyParser = require('koa-body-parser');
+
 // 实例化koa
 const app = new koa();
 const router = new Router();
 
 app.use(bodyParser())
 
+const passport = require('koa-passport')   // 用于验证和获取token
+app.use(passport.initialize())
+app.use(passport.session())
 
+
+
+// passport的验证和获取token
+require('./config/passport')(passport)
 
 // 路由
 router.get('/', async ctx => {

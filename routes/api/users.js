@@ -3,9 +3,13 @@ const router = new Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passport = require('koa-passport');
 // 引入User
 const User = require('../../models/User.js');
 const {tools} = require('../../util/utils');
+
+
+
 console.log(tools);
 /**
 * @route Get  api/users/test
@@ -128,6 +132,26 @@ router.post('/login',async ctx => {
         }
 
      }
+})
+
+
+
+/**
+* @route Get  api/users/get_user
+* @desc 返回用户信息, 
+* @access 接口是私密的，必须给token
+*/
+
+router.get('/get_user',passport.authenticate('jwt', { session: false }),async ctx => {
+  const  {_id,username,email,avatar} = ctx.state.user;
+  ctx.body = {
+      user:{
+          id:_id,
+          username,
+          email,
+          avatar
+      }
+  }
 })
 
 
