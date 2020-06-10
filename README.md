@@ -43,6 +43,8 @@ $ heroku git:remote -a social-system-server
 $ git add .
 $ git commit -am "make it better"
 $ git push heroku master
+
+4. heroku open
 ```
 如果是一个已经存在的项目，只需要：
 ```javascript
