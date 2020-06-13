@@ -59,15 +59,13 @@ router.post('/register',async ctx => {
         });
         // 存储到数据库
         await newUser.save().then((user) => {
-            console.log(user)
-            ctx.body = user;
+            ctx.body = {
+                code:0,
+                msg:'注册成功'
+            }
         }).catch((error) => {
             console.log(error);
         })
-        // 返回数据
-        ctx.body = {
-            user:newUser
-        }
     }
 });
 
