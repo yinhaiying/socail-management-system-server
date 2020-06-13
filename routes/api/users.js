@@ -13,18 +13,6 @@ const {validateRegisterData} = require('../../validation/register');
 const {validateLoginData} = require('../../validation/login');
 
 
-console.log(tools);
-/**
-* @route Get  api/users/test
-* @desc 测试接口地址
-* @access 接口是公开的
-*/
-router.get('/test',async ctx => {
-    ctx.status = 200;
-    ctx.body = 'hello,world';
-});
-
-
 /**
 * @route Get  api/users/register
 * @desc 注册地址
@@ -35,7 +23,6 @@ router.post('/register',async ctx => {
     const {username,email,password} = ctx.request.body;
     const {msg,isValid} = validateRegisterData(ctx.request.body);
     if(!isValid){
-      ctx.status = 400;
       ctx.body = {
           code:1,
           msg
@@ -44,7 +31,6 @@ router.post('/register',async ctx => {
     }
     // 将数据存入数据库
     const findResult =  await User.find({username});
-    console.log(findResult)
     if(findResult.length > 0){
         ctx.body = {
             msg:'用户名已注册'
@@ -85,7 +71,6 @@ router.post('/login',async ctx => {
     ];
     const {msg,isValid} = validateLoginData(ctx.request.body);
     if(!isValid){
-      ctx.status = 400;
       ctx.body = {
           code:1,
           msg
@@ -94,8 +79,6 @@ router.post('/login',async ctx => {
     }
     const findUser = await User.find({email});
      if(findUser.length === 0){
-         console.log(ctx.status)
-         ctx.status = 404;
          ctx.body = {
              code:1,
              msg:'用户不存在'
@@ -114,7 +97,6 @@ router.post('/login',async ctx => {
                 avatar:user.avatar
             }
             const token = jwt.sign(payLoad,"secret",{expiresIn:3600})  // secret可以随意设置
-            ctx.status = 200;
             // 这里token的值必须是Bearer+空格 + token
             ctx.body = {
                 code:0,
@@ -122,7 +104,6 @@ router.post('/login',async ctx => {
                 token:"Bearer " + token
             }
         }else{
-            ctx.status = 400;
             ctx.body = {
                 code:1,
                 msg:'密码错误'
